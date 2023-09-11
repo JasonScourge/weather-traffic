@@ -1,4 +1,4 @@
-# Getting Started with Create React App
+# Weather Forecast and Traffic Cam Website
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
@@ -15,4 +15,7 @@ You can also try running `npm ci` instead if you encounter any versioning issues
 Runs the app in the development mode.\
 Open [http://localhost:3001](http://localhost:3001) to view it in your browser.
 
-The page will reload when you make changes.\
+The page will reload when you make changes.
+
+### Potential Issuess
+If you have any port conflict issues, try changing the port number in the `.env` file.
