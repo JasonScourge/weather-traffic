@@ -1,12 +1,12 @@
 import { axiosClient } from "../api/axiosClient";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 
-const TrafficImagesService = {
-  async getTrafficImages(date = dayjs()) {
+const WeatherForecastService = {
+  async getWeatherForecast(date: Dayjs = dayjs()) {
     const formattedDate = date.format("YYYY-MM-DD[T]HH:mm:ss");
     const getParam = `date_time=${formattedDate}`;
     const response = await axiosClient.get(
-      `/transport/traffic-images?${getParam}`
+      `/environment/2-hour-weather-forecast?${getParam}`
     );
     const { status, data } = response;
 
@@ -18,4 +18,4 @@ const TrafficImagesService = {
   },
 };
 
-export default TrafficImagesService;
+export default WeatherForecastService;

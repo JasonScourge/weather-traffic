@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { Col, Row, DatePicker, TimePicker, Button, Typography } from "antd";
 
 import WeatherForecastService from "../../services/weatherForecastService";
@@ -14,21 +14,30 @@ import {
 } from "../../utils/utils";
 import WeatherIcons from "../../components/WeatherIcons/WeatherIcons";
 
+import {
+  SelectedLocationDataType,
+  WeatherTrafficDataType,
+  TrafficImagesDataType,
+} from "./types";
+
 const { Title } = Typography;
 
 function WeatherTraffic() {
-  const ref = useRef(null);
+  const ref = useRef<null | HTMLDivElement>(null);
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedTime, setSelectedTime] = useState(null);
-  const [selectedLocation, setSelectedLocation] = useState(null);
-  const [selectedLocationData, setSelectedLocationData] = useState(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [selectedDate, setSelectedDate] = useState<string>("");
+  const [selectedTime, setSelectedTime] = useState<string>("");
+  const [selectedLocation, setSelectedLocation] = useState<string>("");
+  const [selectedLocationData, setSelectedLocationData] =
+    useState<SelectedLocationDataType | null>(null);
 
-  const [weatherTrafficData, setWeatherTrafficData] = useState(null);
-  const [trafficImagesData, setTrafficImagesData] = useState(null);
-  const [locationList, setlocationList] = useState(null);
-  const [locationsData, setLocationsData] = useState(null);
+  const [weatherTrafficData, setWeatherTrafficData] =
+    useState<WeatherTrafficDataType | null>(null);
+  const [trafficImagesData, setTrafficImagesData] =
+    useState<TrafficImagesDataType | null>(null);
+  const [locationList, setLocationList] = useState<string[] | null>(null);
+  const [locationsData, setLocationsData] = useState<any>(null);
 
   useEffect(() => {
     if (trafficImagesData && weatherTrafficData) {
@@ -38,7 +47,7 @@ function WeatherTraffic() {
     }
   }, [trafficImagesData, weatherTrafficData]);
 
-  const fetchWeatherTraffic = async (inputDate) => {
+  const fetchWeatherTraffic = async (inputDate: Dayjs) => {
     try {
       const response = await WeatherForecastService.getWeatherForecast(
         inputDate
@@ -51,7 +60,7 @@ function WeatherTraffic() {
     }
   };
 
-  const fetchTrafficImages = async (inputDate) => {
+  const fetchTrafficImages = async (inputDate: Dayjs) => {
     try {
       const response = await TrafficImageService.getTrafficImages(inputDate);
       setTrafficImagesData(response);
@@ -63,13 +72,13 @@ function WeatherTraffic() {
   };
 
   const resetLocationSelection = () => {
-    setSelectedLocation(null);
+    setSelectedLocation("");
     setSelectedLocationData(null);
   };
 
-  const processDataForLocationList = (cameras, geoCodes) => {
-    const locationsData = {};
-    const locationListing = [];
+  const processDataForLocationList = (cameras: any[], geoCodes: any[]) => {
+    const locationsData: any = {};
+    const locationListing: string[] = [];
 
     for (const camera of cameras) {
       const latitude = camera?.location?.latitude;
@@ -90,7 +99,7 @@ function WeatherTraffic() {
       }
     }
 
-    setlocationList(locationListing.sort());
+    setLocationList(locationListing.sort());
     setLocationsData(locationsData);
   };
 
@@ -109,7 +118,7 @@ function WeatherTraffic() {
               style={styles.datePicker}
               disabledDate={(current) => current.isAfter(dayjs())}
               onChange={(date, dateString) =>
-                date ? setSelectedDate(dateString) : setSelectedDate(null)
+                date ? setSelectedDate(dateString) : setSelectedDate("")
               }
             />
           </Col>
@@ -117,7 +126,7 @@ function WeatherTraffic() {
             <TimePicker
               style={styles.timePicker}
               onChange={(value, timeString) =>
-                value ? setSelectedTime(timeString) : setSelectedTime(null)
+                value ? setSelectedTime(timeString) : setSelectedTime("")
               }
             />
           </Col>
@@ -131,7 +140,7 @@ function WeatherTraffic() {
               style={styles.btnEnter}
               disabled={!selectedDate || !selectedTime}
               onClick={() => {
-                const selectedDateTime = dayjs(
+                const selectedDateTime: Dayjs = dayjs(
                   `${selectedDate}${selectedTime}`
                 );
                 setIsLoading(true);
@@ -148,8 +157,8 @@ function WeatherTraffic() {
           {locationList && (
             <Col lg={16} xs={24}>
               <Row style={styles.locationsBtnsContainer} gutter={[12, 16]}>
-                {locationList.map((location) => (
-                  <Col lg={8} xs={24} key={location.toString()}>
+                {locationList.map((location: string) => (
+                  <Col lg={8} xs={24} key={location}>
                     <Button
                       block
                       onClick={() => {
@@ -168,10 +177,10 @@ function WeatherTraffic() {
           <Col lg={8} xs={24}>
             {selectedLocation && selectedLocationData && (
               <Row ref={ref} style={styles.weatherContainer}>
-                <WeatherIcons forecast={selectedLocationData.forecast} />
+                <WeatherIcons forecast={selectedLocationData?.forecast} />
                 <Col span={24}>
                   <Title style={styles.forecastText} level={3}>
-                    {selectedLocationData.forecast}
+                    {selectedLocationData?.forecast}
                   </Title>
                 </Col>
                 <Col span={24}>
@@ -187,8 +196,8 @@ function WeatherTraffic() {
         {selectedLocationData && (
           <Row gutter={[24, 16]}>
             <Col lg={24} xs={24}>
-              {selectedLocationData.images.map((image, index) => (
-                <div style={styles.imgContainer} key={image.toString()}>
+              {selectedLocationData?.images.map((image, index) => (
+                <div style={styles.imgContainer} key={image}>
                   <img
                     src={image}
                     alt={`${selectedLocation}CameraImage-${index}`}

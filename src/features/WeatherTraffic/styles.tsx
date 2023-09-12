@@ -23,12 +23,12 @@ const styles = {
     justifyContent: "center",
   },
   selectedLocationTitleContainer: {
-    textAlign: "center",
-    marginTop: 5,
+    textAlign: "center" as const,
+    marginTop: 5 as const,
   },
   forecastText: {
-    textAlign: "center",
-    marginTop: 5,
+    textAlign: "center" as const,
+    marginTop: 5 as const,
   },
   weatherContainer: {
     display: "flex",

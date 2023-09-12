@@ -1,32 +1,46 @@
-const calculateDistance = (lat1, lon1, lat2, lon2) => {
+import { GetCamerasDataType, GetGeoCodesDataType, LocationType } from "./types";
+
+const calculateDistance = (
+  lat1: number,
+  lon1: number,
+  lat2: number,
+  lon2: number
+) => {
   if (lat1 === lat2 && lon1 === lon2) {
     return 0;
   }
 
-  const radius = 6371; // Earth's radius in kilometers
-  const dLat = (lat2 - lat1) * (Math.PI / 180);
-  const dLon = (lon2 - lon1) * (Math.PI / 180);
-  const a =
+  const radius: number = 6371; // Earth's radius in kilometers
+  const dLat: number = (lat2 - lat1) * (Math.PI / 180);
+  const dLon: number = (lon2 - lon1) * (Math.PI / 180);
+  const a: number =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
     Math.cos(lat1 * (Math.PI / 180)) *
       Math.cos(lat2 * (Math.PI / 180)) *
       Math.sin(dLon / 2) *
       Math.sin(dLon / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  const distance = radius * c; // Distance in kilometers
+  const c: number = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const distance: number = radius * c; // Distance in kilometers
 
   return distance;
 };
 
-const findNearestLocation = (targetLat, targetLon, locations) => {
-  let nearestLocation = null;
-  let shortestDistance = Infinity;
+const findNearestLocation = (
+  targetLat: number,
+  targetLon: number,
+  locations: LocationType[]
+) => {
+  let nearestLocation: LocationType = {
+    name: "",
+    labelLocation: { longitude: 1, latitude: 1 },
+  };
+  let shortestDistance: number = Infinity;
 
   for (const location of locations) {
-    const latitude = location.labelLocation.latitude;
-    const longitude = location.labelLocation.longitude;
+    const latitude: number = location.labelLocation?.latitude;
+    const longitude: number = location.labelLocation?.longitude;
 
-    const distance = calculateDistance(
+    const distance: number = calculateDistance(
       targetLat,
       targetLon,
       latitude,
@@ -42,15 +56,15 @@ const findNearestLocation = (targetLat, targetLon, locations) => {
   return nearestLocation;
 };
 
-const getCamerasData = (data) => {
-  if (Array.isArray(data.items) && data.items.length > 0) {
+const getCamerasData = (data: GetCamerasDataType) => {
+  if (data.items?.length > 0) {
     return data.items[0].cameras;
   } else {
     return [];
   }
 };
 
-const getGeoCodesData = (data) => {
+const getGeoCodesData = (data: GetGeoCodesDataType) => {
   if (
     data &&
     Array.isArray(data.area_metadata) &&
